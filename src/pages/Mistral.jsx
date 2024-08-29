@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-
 import { HfInference } from "@huggingface/inference";
 
-const inference = new HfInference("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");
+const inference = new HfInference("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");
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const endOfMessagesRef = useRef(null); // Reference to scroll to\
+  const endOfMessagesRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +18,7 @@ const Chat = () => {
       try {
         let botReply = "";
         for await (const chunk of inference.chatCompletionStream({
-          model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+          model: "mistralai/Mixtral-8x7B-Instruct-v0.1", // Updated to a different model
           messages: [{ role: "user", content: input }],
           max_tokens: 30000,
         })) {
@@ -34,7 +33,7 @@ const Chat = () => {
           ]);
         }
       } catch (error) {
-        console.error("Error fetching data from Hugging Face");
+        console.error("Error fetching data from Hugging Face", error);
         setMessages((prevMessages) => [
           ...prevMessages,
           {
@@ -54,12 +53,10 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Header */}
       <header className="bg-blue-600 text-white p-4 shadow-md">
         <h1 className="text-lg font-semibold">Chat</h1>
       </header>
 
-      {/* Chat messages area */}
       <main className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-4">
           {messages.map((msg) => (
@@ -74,12 +71,10 @@ const Chat = () => {
               {msg.text}
             </div>
           ))}
-          {/* Ref to automatically scroll to this point */}
           <div ref={endOfMessagesRef} />
         </div>
       </main>
 
-      {/* Input area */}
       <footer className="p-4 bg-white border-t border-gray-200">
         <form onSubmit={handleSubmit} className="flex">
           <input
